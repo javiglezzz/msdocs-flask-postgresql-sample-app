@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import base64
 
 from flask import Flask, redirect, render_template, request, send_from_directory, url_for, jsonify
 from flask_migrate import Migrate
