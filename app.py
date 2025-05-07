@@ -125,7 +125,7 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/vaciar', methods=['POST'])
+@app.route('/vaciar', methods=['GET','POST'])
 @csrf.exempt
 def vaciar_imagenes():
     try:
