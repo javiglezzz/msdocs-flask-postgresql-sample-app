@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from flask import Flask, redirect, render_template, request, send_from_directory, url_for
+from flask import Flask, redirect, render_template, request, send_from_directory, url_for, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -32,7 +32,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # The import must be done after db initialization due to circular import issue
-from models import Restaurant, Review
+from models import ImageRecord, Restaurant, Review
 
 @app.route('/', methods=['GET'])
 def index():
@@ -118,6 +118,40 @@ def utility_processor():
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+@app.route('/upload', methods=['POST'])
+@csrf.exempt
+def upload_image():
+    # 1) Recibe y parsea el JSON
+    data = request.get_json(force=True)
+    # 2) Decodifica la imagen
+    img_b64 = data.get('image_base64', '')
+    img_bytes = base64.b64decode(img_b64)
+    # 3) Guarda la imagen en disco (o en blob storage)
+    uploads_dir = os.path.join(app.root_path, 'static', 'uploads')
+    os.makedirs(uploads_dir, exist_ok=True)
+    filename = f"{data.get('date')}_{int(datetime.utcnow().timestamp())}.jpg"
+    file_path = os.path.join(uploads_dir, filename)
+    with open(file_path, 'wb') as img_file:
+        img_file.write(img_bytes)
+    # 4) (Opcional) Inserta en la base de datos
+    record = ImageRecord(
+        date         = data.get('date'),
+        red_pixels   = data.get('red_pixels'),
+        green_pixels = data.get('green_pixels'),
+        blue_pixels  = data.get('blue_pixels'),
+        width        = data.get('width'),
+        height       = data.get('height'),
+        filename     = filename
+    )
+    db.session.add(record)
+    db.session.commit()
+    # 5) Devuelve respuesta JSON
+    return jsonify({
+        "status": "ok",
+        "id":     record.id,
+        "url":    url_for('static', filename=f"uploads/{filename}", _external=True)
+    }), 201
 
 if __name__ == '__main__':
     app.run()
