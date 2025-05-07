@@ -15,7 +15,8 @@ class ImageRecord(db.Model):
     width        = Column(Integer, nullable=False)
     height       = Column(Integer, nullable=False)
     filename     = Column(String(255), nullable=False)
-    image_data   = Column(LargeBinary, nullable=False)   # <— Blob de la imagen
+    image_data_original   = Column(LargeBinary, nullable=False)   # <— Blob de la imagen
+    image_data_transformed = Column(LargeBinary, nullable=False)   # <— Blob de la imagen transformada
     created_at   = Column(DateTime)
 
     @validates('red_pixels', 'green_pixels', 'blue_pixels', 'width', 'height')

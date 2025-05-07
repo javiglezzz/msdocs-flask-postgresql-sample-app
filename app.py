@@ -43,12 +43,18 @@ def list_images():
 
 
 
-@app.route('/<int:image_id>/data')
-def get_image_data(image_id):
+@app.route('/<int:image_id>/data/<string:image_type>')
+def get_image_data(image_id, image_type):
     image = db.session.get(ImageRecord, image_id)
     if not image:
         abort(404)
-    return send_file(BytesIO(image.image_data), mimetype='image/png')
+    
+    if image_type == 'original':
+        return send_file(BytesIO(image.image_data_original), mimetype='image/png')
+    elif image_type == 'transformed':
+        return send_file(BytesIO(image.image_data_transformed), mimetype='image/png')
+    else:
+        abort(400, description="Invalid image type. Use 'original' or 'transformed'.")
 
 
 @app.route('/vaciar', methods=['GET','POST'])
@@ -77,6 +83,8 @@ def upload_image():
         data = request.get_json(force=True)
         img_b64   = data.get('image_base64', '')
         img_bytes = base64.b64decode(img_b64)
+        img_b64_2   = data.get('image_base64_2', '')
+        img_bytes_2 = base64.b64decode(img_b64)
 
      
         # Creamos el registro incluyendo el blob
@@ -87,7 +95,8 @@ def upload_image():
             width        = data.get('width'),
             height       = data.get('height'),
             filename     = data.get('filename'),
-            image_data   = img_bytes,       # <-- aquí vas los bytes
+            image_data_original   = img_bytes,
+            image_data_transformed = img_bytes_2,
             created_at   = datetime.now()
         )
         db.session.add(record)

@@ -9,7 +9,8 @@
         <th>Dimensiones</th>
         <th>Píxeles (R,G,B)</th>
         <th>Fecha</th>
-        <th>Ver</th>
+        <th>Imagen Original</th>
+        <th>Imagen Transformada</th>
       </tr>
     </thead>
     <tbody>
@@ -20,7 +21,10 @@
           <td>{{ img.red_pixels }},{{ img.green_pixels }},{{ img.blue_pixels }}</td>
           <td>{{ img.created_at.strftime('%Y‑%m‑%d %H:%M:%S') }}</td>
           <td>
-            <a href="{{ url_for('get_image_data', image_id=img.id) }}">Ver imagen</a>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='original') }}">Ver original</a>
+          </td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='transformed') }}">Ver transformada</a>
           </td>
         </tr>
       {% endfor %}
