@@ -85,7 +85,7 @@ def get_image_data(image_id):
     image = db.session.get(ImageRecord, image_id)
     if not image:
         abort(404)
-    return send_file(BytesIO(image.data), mimetype='image/png')
+    return send_file(BytesIO(image.image_data), mimetype='image/png')
 
 @app.route('/review/<int:id>', methods=['POST'])
 @csrf.exempt
