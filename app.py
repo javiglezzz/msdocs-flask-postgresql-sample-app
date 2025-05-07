@@ -1,8 +1,9 @@
+from io import BytesIO
 import os
 from datetime import datetime
 import base64
 
-from flask import Flask, redirect, render_template, request, send_from_directory, url_for, jsonify
+from flask import Flask, abort, redirect, render_template, request, send_file, send_from_directory, url_for, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
@@ -78,6 +79,13 @@ def add_restaurant():
         db.session.commit()
 
         return redirect(url_for('details', id=restaurant.id))
+
+@app.route('/images/<int:image_id>/data')
+def get_image_data(image_id):
+    image = db.session.get(ImageRecord, image_id)
+    if not image:
+        abort(404)
+    return send_file(BytesIO(image.data), mimetype='image/png')
 
 @app.route('/review/<int:id>', methods=['POST'])
 @csrf.exempt
