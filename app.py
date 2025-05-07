@@ -142,7 +142,8 @@ def upload_image():
             width        = data.get('width'),
             height       = data.get('height'),
             filename     = data.get('filename'),
-            image_data   = img_bytes       # <-- aquí vas los bytes
+            image_data   = img_bytes,       # <-- aquí vas los bytes
+            created_at   = datetime.now()
         )
         db.session.add(record)
         db.session.commit()
