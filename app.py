@@ -125,6 +125,25 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/vaciar', methods=['POST'])
+@csrf.exempt
+def vaciar_imagenes():
+    try:
+        # Borra todos los registros de la tabla images
+        num_deleted = db.session.query(ImageRecord).delete()
+        db.session.commit()
+        return jsonify({
+            "status": "ok",
+            "message": f"Se eliminaron {num_deleted} imágenes."
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        app.logger.exception("Error al vaciar la tabla images")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+    
 @app.route('/upload', methods=['POST'])
 @csrf.exempt
 def upload_image():
