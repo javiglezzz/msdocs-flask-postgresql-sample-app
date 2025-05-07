@@ -137,7 +137,7 @@ def upload_image():
         img_file.write(img_bytes)
     # 4) (Opcional) Inserta en la base de datos
     record = ImageRecord(
-        date         = data.get('date'),
+        
         red_pixels   = data.get('red_pixels'),
         green_pixels = data.get('green_pixels'),
         blue_pixels  = data.get('blue_pixels'),
