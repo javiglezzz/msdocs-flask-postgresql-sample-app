@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, LargeBinary, String
 from sqlalchemy.orm import validates
 from datetime import datetime
 
@@ -42,8 +42,8 @@ class ImageRecord(db.Model):
     width        = Column(Integer, nullable=False)
     height       = Column(Integer, nullable=False)
     filename     = Column(String(255), nullable=False)
+    image_data   = Column(LargeBinary, nullable=False)   # <— Blob de la imagen
     created_at   = Column(DateTime)
-    
 
     @validates('red_pixels', 'green_pixels', 'blue_pixels', 'width', 'height')
     def validate_non_negative(self, key, value):
@@ -51,7 +51,5 @@ class ImageRecord(db.Model):
         return value
 
     def __repr__(self):
-        # Representación útil en consola / logs
-        return (f"<ImageRecord id={self.id} date={self.date} "
-                f"pixels=({self.red_pixels},{self.green_pixels},{self.blue_pixels}) "
-                f"size={self.width}x{self.height}>")
+        return (f"<ImageRecord id={self.id} size={self.width}x{self.height} "
+                f"pixels=({self.red_pixels},{self.green_pixels},{self.blue_pixels})>")
