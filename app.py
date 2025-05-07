@@ -35,6 +35,11 @@ migrate = Migrate(app, db)
 # The import must be done after db initialization due to circular import issue
 from models import ImageRecord, Restaurant, Review
 
+@app.route('/images', methods=['GET'])
+def list_images():
+    images = ImageRecord.query.order_by(ImageRecord.created_at.desc()).all()
+    return render_template('images_list.html', images=images)
+
 @app.route('/', methods=['GET'])
 def index():
     print('Request for index page received')

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Imágenes{% endblock %}
+{% block content %}
+  <h1>Imágenes subidas</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Dimensiones</th>
+        <th>Píxeles (R,G,B)</th>
+        <th>Fecha</th>
+        <th>Ver</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for img in images %}
+        <tr>
+          <td>{{ img.id }}</td>
+          <td>{{ img.width }}×{{ img.height }}</td>
+          <td>{{ img.red_pixels }},{{ img.green_pixels }},{{ img.blue_pixels }}</td>
+          <td>{{ img.created_at.strftime('%Y‑%m‑%d %H:%M:%S') }}</td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id) }}">Ver imagen</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
