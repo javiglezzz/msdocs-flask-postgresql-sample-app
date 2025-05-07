@@ -84,7 +84,7 @@ def upload_image():
         img_b64   = data.get('image_base64', '')
         img_bytes = base64.b64decode(img_b64)
         img_b64_2   = data.get('image_base64_2', '')
-        img_bytes_2 = base64.b64decode(img_b64)
+        img_bytes_2 = base64.b64decode(img_b64_2)
 
      
         # Creamos el registro incluyendo el blob
