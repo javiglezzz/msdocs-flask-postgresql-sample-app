@@ -34,7 +34,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # The import must be done after db initialization due to circular import issue
-from models import ImageRecord, Restaurant, Review
+from models import ImageRecord
 
 @app.route('/', methods=['GET'])
 def list_images():
