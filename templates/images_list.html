@@ -11,7 +11,11 @@
         <th>Píxeles (R,G,B)</th>
         <th>Fecha</th>
         <th>Imagen Original</th>
-        <th>Imagen Transformada</th>
+        <th>Canal Rojo</th>
+        <th>Canal Verde</th>
+        <th>Canal Azul</th>
+        <th>Blanco y Negro</th>
+        <th>Pixelada</th>
       </tr>
     </thead>
     <tbody>
@@ -23,13 +27,29 @@
           <td>{{ img.red_pixels }},{{ img.green_pixels }},{{ img.blue_pixels }}</td>
           <td>{{ img.created_at.strftime('%Y‑%m‑%d %H:%M:%S') }}</td>
           <td>
-            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='original') }}">Ver original</a>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='original') }}">Original</a>
           </td>
           <td>
-            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='transformed') }}">Ver transformada</a>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='R') }}">R</a>
+          </td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='G') }}">G</a>
+          </td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='B') }}">B</a>
+          </td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='BN') }}">Blanco y negro</a>
+          </td>
+          <td>
+            <a href="{{ url_for('get_image_data', image_id=img.id, image_type='Pix') }}">Pixelada</a>
           </td>
         </tr>
-      {% endfor %}
+
+
+
+
+{% endblock %}  </table>    </tbody>      {% endfor %}      {% endfor %}
     </tbody>
   </table>
 {% endblock %}

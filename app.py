@@ -47,14 +47,23 @@ def list_images():
 def get_image_data(image_id, image_type):
     image = db.session.get(ImageRecord, image_id)
     if not image:
-        abort(404)
+        abort(404, description="Image not found.")
     
-    if image_type == 'original':
-        return send_file(BytesIO(image.image_data_original), mimetype='image/png')
-    elif image_type == 'transformed':
-        return send_file(BytesIO(image.image_data_transformed), mimetype='image/png')
+    # Mapeo de tipos de imagen a los campos de la base de datos
+    image_types = {
+        'original': image.image_data_original,
+        'R': image.image_data_R,
+        'G': image.image_data_G,
+        'B': image.image_data_B,
+        'BN': image.image_data_BN,
+        'Pix': image.image_data_Pix
+    }
+
+    # Verificar si el tipo de imagen solicitado es válido
+    if image_type in image_types:
+        return send_file(BytesIO(image_types[image_type]), mimetype='image/png')
     else:
-        abort(400, description="Invalid image type. Use 'original' or 'transformed'.")
+        abort(400, description="Invalid image type. Use 'original', 'R', 'G', 'B', 'BN', or 'Pix'.")
 
 
 @app.route('/vaciar', methods=['GET','POST'])
@@ -81,37 +90,55 @@ def vaciar_imagenes():
 def upload_image():
     try:
         data = request.get_json(force=True)
-        img_b64   = data.get('image_base64', '')
-        img_bytes = base64.b64decode(img_b64)
-        img_b64_2   = data.get('image_base64_2', '')
-        img_bytes_2 = base64.b64decode(img_b64_2)
 
-     
-        # Creamos el registro incluyendo el blob
+        # Decodificar las imágenes base64
+        img_original_b64 = data.get('image_data_original', '')
+        img_original_bytes = base64.b64decode(img_original_b64)
+
+        img_R_b64 = data.get('image_data_R', '')
+        img_R_bytes = base64.b64decode(img_R_b64)
+
+        img_G_b64 = data.get('image_data_G', '')
+        img_G_bytes = base64.b64decode(img_G_b64)
+
+        img_B_b64 = data.get('image_data_B', '')
+        img_B_bytes = base64.b64decode(img_B_b64)
+
+        img_BN_b64 = data.get('image_data_BN', '')
+        img_BN_bytes = base64.b64decode(img_BN_b64)
+
+        img_Pix_b64 = data.get('image_data_Pix', '')
+        img_Pix_bytes = base64.b64decode(img_Pix_b64)
+
+        # Crear el registro en la base de datos
         record = ImageRecord(
-            red_pixels   = data.get('red_pixels'),
-            green_pixels = data.get('green_pixels'),
-            blue_pixels  = data.get('blue_pixels'),
-            width        = data.get('width'),
-            height       = data.get('height'),
-            filename     = data.get('filename'),
-            image_data_original   = img_bytes,
-            image_data_transformed = img_bytes_2,
-            created_at   = datetime.now()
+            usuario=data.get('usuario'),
+            red_pixels=data.get('red_pixels'),
+            green_pixels=data.get('green_pixels'),
+            blue_pixels=data.get('blue_pixels'),
+            width=data.get('width'),
+            height=data.get('height'),
+            filename=data.get('filename'),
+            image_data_original=img_original_bytes,
+            image_data_R=img_R_bytes,
+            image_data_G=img_G_bytes,
+            image_data_B=img_B_bytes,
+            image_data_BN=img_BN_bytes,
+            image_data_Pix=img_Pix_bytes,
+            created_at=datetime.now()
         )
         db.session.add(record)
         db.session.commit()
 
         return jsonify({
             "status": "ok",
-            "id":     record.id,
-      
+            "id": record.id,
         }), 201
 
     except Exception as e:
         app.logger.exception("Error en /upload")
         return jsonify({
-            "status":  "error",
+            "status": "error",
             "message": str(e)
         }), 500
 
