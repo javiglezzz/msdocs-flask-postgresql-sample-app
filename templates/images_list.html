@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% block title %}Imágenes{% endblock %}
+
 {% block content %}
   <h1>Imágenes subidas</h1>
   <table class="table">
@@ -45,11 +47,7 @@
             <a href="{{ url_for('get_image_data', image_id=img.id, image_type='Pix') }}">Pixelada</a>
           </td>
         </tr>
-
-
-
-
-{% endblock %}  </table>    </tbody>      {% endfor %}      {% endfor %}
+      {% endfor %}
     </tbody>
   </table>
 {% endblock %}
