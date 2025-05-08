@@ -8,6 +8,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Usuario</th>
         <th>Nombre de archivo</th>
         <th>Dimensiones</th>
         <th>Píxeles (R,G,B)</th>
@@ -24,6 +25,7 @@
       {% for img in images %}
         <tr>
           <td>{{ img.id }}</td>
+          <td>{{ img.usuario }}</td>
           <td>{{ img.filename }}</td>
           <td>{{ img.width }}×{{ img.height }}</td>
           <td>{{ img.red_pixels }},{{ img.green_pixels }},{{ img.blue_pixels }}</td>
